@@ -12,7 +12,10 @@ package ru.subscribe.pro.api.command;
  */
 public enum ErrorCode {
     /** Auth failed. */
-    AUTH_FAILED("error/auth/failed");
+    AUTH_FAILED("error/auth/failed"),
+    /** Wrong cookie. Not needed confirmation.*/
+    WRONG_COOKIE("error/member/wrongcookie");
+
 
     private final String id;
 

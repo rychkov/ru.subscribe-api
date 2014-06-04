@@ -17,16 +17,34 @@ public enum Const {
     /** JSON. */
     JSON("json", "1"),
     /** Request id. */
-    REQUEST_ID("request.id", ""),
+    REQUEST_ID("request.id"),
     /** Request. */
-    REQUEST("request", ""),
+    REQUEST("request"),
     /** Session. */
-    SESSION("session", ""),
+    SESSION("session"),
     /** Redirect part. */
-    REDIRECT("REDIRECT", "");
+    REDIRECT("REDIRECT"),
+    /** Errors. */
+    ERRORS("errors"),
+    /** Id. */
+    ID("id"),
+    /** Explain. */
+    EXPLAIN("explain"),
+    /** List. */
+    LIST("list"),
+    /** Name. */
+    NAME("name"),
+    /** Group type. */
+    GROUP_TYPE("type"),
+    /** Address type. */
+    ADDRESS_TYPE("addr_type");
 
     private final String paramName;
     private final String defaultValue;
+
+    private Const(String paramName) {
+        this(paramName, null);
+    }
 
     private Const(String paramName, String defaultValue) {
         this.paramName = paramName;
