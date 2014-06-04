@@ -6,7 +6,6 @@
 package ru.subscribe.pro.api.utils;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -59,20 +58,34 @@ public final class DataExtractUtils {
      */
     public static List<Error> getErrors(Object cmdResponse) {
         List<Error> errors;
-        Collection<Map<String, String>> errorsObj = ((Map<String, Collection<Map<String, String>>>) cmdResponse).get(Const.ERRORS.getParamName());
+        List<Map<String, String>> errorsObj = getList((Map<String, List<Map<String, String>>>) cmdResponse, Const.ERRORS);
         if (errorsObj != null) {
             errors = new ArrayList<>(errorsObj.size());
             for (Map<String, String> item : errorsObj) {
-                String id = getStringValue(item, Const.ID);
-                String explain = getStringValue(item, Const.EXPLAIN);
-
-                Error e = new Error(id, explain);
+                Error e = getError(item);
                 errors.add(e);
             }
         } else {
             errors = Collections.emptyList();
         }
         return errors;
+    }
+
+    /**
+     * Gets error.
+     *
+     * @param cmdResponse parsed command response
+     * @return error or Error.NO_ERROR if no error
+     */
+    public static Error getError(Object cmdResponse) {
+        List<Error> errors = getErrors(cmdResponse);
+        return errors.isEmpty() ? Error.NO_ERROR : errors.get(0);
+    }
+
+    private static Error getError(Map<String, String> item) {
+        String id = getStringValue(item, Const.ID);
+        String explain = getStringValue(item, Const.EXPLAIN);
+        return new Error(id, explain);
     }
 
     /**
@@ -92,6 +105,17 @@ public final class DataExtractUtils {
         return result;
     }
 
+    /**
+     * Gets group info.
+     *
+     * @param cmdResponse parsed command response
+     * @return group info or {@code null}
+     */
+    public static Group getGroup(Object cmdResponse) {
+        Map<String, String> entry = getMap((Map<String, Map<String, String>>) cmdResponse, Const.OBJECT);
+        return entry == null ? null : getGroup(entry);
+    }
+
     private static Group getGroup(Map<String, String> entry) {
         String id = getStringValue(entry, Const.ID);
         String name = getStringValue(entry, Const.NAME);
@@ -101,6 +125,10 @@ public final class DataExtractUtils {
     }
 
     private static <T> List<T> getList(Map<String, List<T>> cmdResponse, Const key) {
+        return cmdResponse.get(key.getParamName());
+    }
+
+    private static <K, V> Map<K, V> getMap(Map<String, Map<K, V>> cmdResponse, Const key) {
         return cmdResponse.get(key.getParamName());
     }
 

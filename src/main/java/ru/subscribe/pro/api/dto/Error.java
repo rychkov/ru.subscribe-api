@@ -14,6 +14,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * @author Yuri Rychkov
  */
 public class Error {
+    /** No error special value. */
+    public static final Error NO_ERROR = new Error("-", "-");
+
     private String id;
     private String explain;
 

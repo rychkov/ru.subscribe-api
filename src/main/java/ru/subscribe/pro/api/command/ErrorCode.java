@@ -5,18 +5,27 @@
 
 package ru.subscribe.pro.api.command;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Error codes.
  *
  * @author Yuri Rychkov
  */
 public enum ErrorCode {
+    /** Unknown error. */
+    UNKNONW(""),
     /** Auth failed. */
     AUTH_FAILED("error/auth/failed"),
     /** Wrong cookie. Not needed confirmation.*/
-    WRONG_COOKIE("error/member/wrongcookie");
+    WRONG_COOKIE("error/member/wrongcookie"),
+    /** Group not exist. */
+    GROUP_NOT_EXIST("group_id_not_exists"),
+    /** Empty name.*/
+    ERROR_PROFILE_EMPTYNAME("error/profile/emptyname");
 
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(ErrorCode.class);
     private final String id;
 
     /**
@@ -43,7 +52,8 @@ public enum ErrorCode {
                 return error;
             }
         }
-        throw new IllegalArgumentException("unknown id: " + id);
+        LOGGER.warn("unknown id: {}", id);
+        return UNKNONW;
     }
 
     public String getId() {

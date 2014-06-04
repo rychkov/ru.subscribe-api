@@ -42,4 +42,8 @@ public enum AddressType {
         }
         throw new IllegalArgumentException("Unknown value: " + value);
     }
+
+    public String getValue() {
+        return value;
+    }
 }

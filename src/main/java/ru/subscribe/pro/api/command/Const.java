@@ -32,6 +32,8 @@ public enum Const {
     EXPLAIN("explain"),
     /** List. */
     LIST("list"),
+    /** Object. */
+    OBJECT("obj"),
     /** Name. */
     NAME("name"),
     /** Group type. */
