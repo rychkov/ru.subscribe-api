@@ -7,6 +7,7 @@ package ru.subscribe.pro.api.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,8 @@ import ru.subscribe.pro.api.dto.AddressType;
 import ru.subscribe.pro.api.dto.Error;
 import ru.subscribe.pro.api.dto.Group;
 import ru.subscribe.pro.api.dto.GroupType;
+import ru.subscribe.pro.api.dto.SmtpInfo;
+import ru.subscribe.pro.api.dto.SmtpStatus;
 
 /**
  * Utils for data extraction from responses.
@@ -122,6 +125,54 @@ public final class DataExtractUtils {
         GroupType type = GroupType.resolveByValue(getStringValue(entry, Const.GROUP_TYPE));
         AddressType addressType = AddressType.resolveByValue(getStringValue(entry, Const.ADDRESS_TYPE));
         return new Group(id, name, type, addressType);
+    }
+
+    /**
+     * Gets SmtpInfo map.
+     *
+     * @param cmdResponse parsed command response
+     * @return map, never {@code null}
+     */
+    public static Map<String, SmtpInfo> getSmtpInfoMap(Object cmdResponse) {
+        Map<String, Map> email2infoMap = getMap((Map<String, Map<String, Map>>) cmdResponse, Const.LIST);
+        if (email2infoMap == null) {
+            return Collections.emptyMap();
+        }
+        Map<String, SmtpInfo> result = new HashMap<>(email2infoMap.size());
+        for (Map.Entry<String, Map> entry : email2infoMap.entrySet()) {
+            result.put(entry.getKey(), getSmtpInfo(entry.getValue()));
+        }
+        return result;
+    }
+
+    private static SmtpInfo getSmtpInfo(Map value) {
+        String email = getStringValue(value, Const.EMAIL);
+        String syntax = getStringValue(value, Const.SYNTAX);
+
+        Map smtp = getMap(value, Const.SMTP);
+
+        SmtpStatus status = null;
+        String domain = null;
+        String mx = null;
+        String ip = null;
+        List<String> ptr = null;
+        String code = null;
+        String dsn = null;
+        String message = null;
+
+        if (smtp != null) {
+            String stringValue = getStringValue(smtp, Const.STATUS);
+            status = stringValue == null ? null : SmtpStatus.resolveByValue(stringValue);
+            domain = getStringValue(smtp, Const.DOMAIN);
+            mx = getStringValue(smtp, Const.MX);
+            ip = getStringValue(smtp, Const.IP);
+            ptr = getList(smtp, Const.PTR);
+            code = getStringValue(smtp, Const.CODE);
+            dsn = getStringValue(smtp, Const.DSN);
+            message = getStringValue(smtp, Const.MESSAGE);
+        }
+
+        return new SmtpInfo(email, syntax, status, domain, mx, ip, ptr, code, dsn, message);
     }
 
     private static <T> List<T> getList(Map<String, List<T>> cmdResponse, Const key) {

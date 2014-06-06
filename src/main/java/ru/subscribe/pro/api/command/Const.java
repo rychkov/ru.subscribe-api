@@ -39,7 +39,30 @@ public enum Const {
     /** Group type. */
     GROUP_TYPE("type"),
     /** Address type. */
-    ADDRESS_TYPE("addr_type");
+    ADDRESS_TYPE("addr_type"),
+    /** Email. */
+    EMAIL("email"),
+    /** Syntax. */
+    SYNTAX("syntax"),
+    /** SMTP. */
+    SMTP("smtp"),
+    /** Status. */
+    STATUS("status"),
+    /** Domain. */
+    DOMAIN("domain"),
+    /** MX. */
+    MX("mx"),
+    /** IP. */
+    IP("ip"),
+    /** PTR. */
+    PTR("ptr"),
+    /** Code. */
+    CODE("code"),
+    /** DSN. */
+    DSN("dsn"),
+    /** Message. */
+    MESSAGE("message")
+    ;
 
     private final String paramName;
     private final String defaultValue;
