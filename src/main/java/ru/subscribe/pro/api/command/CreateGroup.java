@@ -7,7 +7,9 @@ package ru.subscribe.pro.api.command;
 
 import com.google.gson.annotations.SerializedName;
 
+import ru.subscribe.pro.api.dto.AddressType;
 import ru.subscribe.pro.api.dto.Group;
+import ru.subscribe.pro.api.dto.GroupType;
 
 /**
  * Create group.
@@ -15,7 +17,11 @@ import ru.subscribe.pro.api.dto.Group;
  * @author Yuri Rychkov
  */
 public class CreateGroup extends SessionCommand {
-    private Group group;
+    private String id;
+    private String name;
+    private GroupType type;
+    @SerializedName("addr_type")
+    private AddressType addressType;
     @SerializedName("issue.passwd")
     private String issuePassword;
 
@@ -38,7 +44,10 @@ public class CreateGroup extends SessionCommand {
      */
     public CreateGroup(String sessionId, Group group, String issuePassword) {
         super(Action.GROUP_CREATE, sessionId);
-        this.group = group;
+        id = group.getId();
+        name = group.getName();
+        type = group.getType();
+        addressType = group.getAddressType();
         this.issuePassword = issuePassword;
     }
 }
