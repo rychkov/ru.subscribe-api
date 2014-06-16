@@ -61,8 +61,9 @@ public enum Const {
     /** DSN. */
     DSN("dsn"),
     /** Message. */
-    MESSAGE("message")
-    ;
+    MESSAGE("message"),
+    /** Newbie. */
+    NEWBIE("newbie");
 
     private final String paramName;
     private final String defaultValue;

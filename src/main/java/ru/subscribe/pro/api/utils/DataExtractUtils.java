@@ -175,6 +175,17 @@ public final class DataExtractUtils {
         return new SmtpInfo(email, syntax, status, domain, mx, ip, ptr, code, dsn, message);
     }
 
+    /**
+     * Gets boolean value.
+     *
+     * @param cmdResponse parsed command response
+     * @param key key
+     * @return value
+     */
+    public static boolean getBoolean(Object cmdResponse, Const key) {
+        return Integer.parseInt(getStringValue((Map<String, String>) cmdResponse, key)) != 0;
+    }
+
     private static <T> List<T> getList(Map<String, List<T>> cmdResponse, Const key) {
         return cmdResponse.get(key.getParamName());
     }
