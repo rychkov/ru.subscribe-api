@@ -32,7 +32,6 @@ public enum Action {
 
     MEMBER_GET("member.get"),
     MEMBER_SET("member.set"),
-    MEMBER_CONFIRM("member.confirm"),
     MEMBER_DELETE("member.delete"),
     MEMBER_WHERE("member.where"),
     MEMBER_LIST("member.list"),
@@ -131,7 +130,6 @@ public enum Action {
 
     RIGHTS_GET("rights.get"),
     RIGHTS_SET("rights.set");
-
 
     private final String value;
 

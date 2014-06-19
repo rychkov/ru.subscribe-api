@@ -175,11 +175,11 @@
             <version>${version.gson}</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.codahale.metrics</groupId>
-            <artifactId>metrics-graphite</artifactId>
-            <version>${version.codahale-metrics}</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.codahale.metrics</groupId>-->
+            <!--<artifactId>metrics-graphite</artifactId>-->
+            <!--<version>${version.codahale-metrics}</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>junit</groupId>
@@ -218,11 +218,11 @@
         <maven.compiler.debug>true</maven.compiler.debug>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <version.slf4j>1.7.7</version.slf4j>
+        <version.slf4j>1.7.5</version.slf4j>
         <version.commons-io>2.4</version.commons-io>
-        <version.commons-lang3>3.3.2</version.commons-lang3>
-        <version.httpcomponents>4.3.2</version.httpcomponents>
+        <version.commons-lang3>3.1</version.commons-lang3>
+        <version.httpcomponents>4.2.2</version.httpcomponents>
         <version.gson>2.2.4</version.gson>
-        <version.codahale-metrics>3.0.2</version.codahale-metrics>
+        <!--<version.codahale-metrics>3.0.2</version.codahale-metrics>-->
     </properties>
 </project>

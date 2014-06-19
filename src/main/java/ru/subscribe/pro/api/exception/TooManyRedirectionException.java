@@ -9,7 +9,7 @@ package ru.subscribe.pro.api.exception;
  * Too many redirection. Throws when session request redirected more than ru.subscribe.pro.api.Session#MAX_REDIRECT_COUNT
  *
  * @author Yuri Rychkov
- * @see ru.subscribe.pro.api.Session#MAX_REDIRECT_COUNT
+ * @see ru.subscribe.pro.api.Connection#MAX_REDIRECT_COUNT
  */
 public class TooManyRedirectionException extends BaseException {
     private int redirectCount;

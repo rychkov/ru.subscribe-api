@@ -5,20 +5,24 @@
 
 package ru.subscribe.pro.api.exception;
 
+import ru.subscribe.pro.api.dto.ApiError;
+
 /**
  * Unauthorized exception.
  *
  * @author Yuri Rychkov
  */
-public class UnauthorizedException extends BaseException {
+public class UnauthorizedException extends BaseApiErrorException {
     private Object details;
 
     /**
      * Constructor.
      *
+     * @param apiError API error
      * @param details details
      */
-    public UnauthorizedException(Object details) {
+    public UnauthorizedException(ApiError apiError, Object details) {
+        super(apiError);
         this.details = details;
     }
 

@@ -9,34 +9,36 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
- * Error DTO.
- *
  * @author Yuri Rychkov
  */
-public class Error {
-    /** No error special value. */
-    public static final Error NO_ERROR = new Error("-", "-");
-
+public class SubscriptionInfo {
     private String id;
-    private String explain;
+    private String name;
+    private boolean system;
 
     /**
      * Constructor.
      *
-     * @param id error id
-     * @param explain text explain
+     * @param id id
+     * @param name name
+     * @param system system flag
      */
-    public Error(String id, String explain) {
+    public SubscriptionInfo(String id, String name, Boolean system) {
         this.id = id;
-        this.explain = explain;
+        this.name = name;
+        this.system = system;
+    }
+
+    public boolean isSystem() {
+        return system;
     }
 
     public String getId() {
         return id;
     }
 
-    public String getExplain() {
-        return explain;
+    public String getName() {
+        return name;
     }
 
     @Override

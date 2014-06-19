@@ -28,8 +28,14 @@ public class SetGroupMember extends SessionCommand {
     private String sourceIp;
     @SerializedName("if_exists")
     private ActionPolicy existsPolicy;
+    //TODO configure confirmation in constructor
+    @SerializedName("newbie.confirm")
+    private int needConfirmation;
     @SerializedName("obj")
     private Map<String, Object> objectMap = new HashMap<>();
+    //TODO disable in future
+    @SerializedName("return_fresh_obj")
+    private int returnFreshObject = 1;
 
     /**
      * Constructor.

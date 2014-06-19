@@ -16,11 +16,12 @@ import org.slf4j.LoggerFactory;
 
 import ru.subscribe.pro.api.command.Const;
 import ru.subscribe.pro.api.dto.AddressType;
-import ru.subscribe.pro.api.dto.Error;
+import ru.subscribe.pro.api.dto.ApiError;
 import ru.subscribe.pro.api.dto.Group;
 import ru.subscribe.pro.api.dto.GroupType;
 import ru.subscribe.pro.api.dto.SmtpInfo;
 import ru.subscribe.pro.api.dto.SmtpStatus;
+import ru.subscribe.pro.api.dto.SubscriptionInfo;
 
 /**
  * Utils for data extraction from responses.
@@ -59,19 +60,19 @@ public final class DataExtractUtils {
      * @param cmdResponse parsed command response
      * @return error errors collection or empty, never {@code null}
      */
-    public static List<Error> getErrors(Object cmdResponse) {
-        List<Error> errors;
+    public static List<ApiError> getErrors(Object cmdResponse) {
+        List<ApiError> apiErrors;
         List<Map<String, String>> errorsObj = getList((Map<String, List<Map<String, String>>>) cmdResponse, Const.ERRORS);
         if (errorsObj != null) {
-            errors = new ArrayList<>(errorsObj.size());
+            apiErrors = new ArrayList<>(errorsObj.size());
             for (Map<String, String> item : errorsObj) {
-                Error e = getError(item);
-                errors.add(e);
+                ApiError e = getError(item);
+                apiErrors.add(e);
             }
         } else {
-            errors = Collections.emptyList();
+            apiErrors = Collections.emptyList();
         }
-        return errors;
+        return apiErrors;
     }
 
     /**
@@ -80,15 +81,15 @@ public final class DataExtractUtils {
      * @param cmdResponse parsed command response
      * @return error or Error.NO_ERROR if no error
      */
-    public static Error getError(Object cmdResponse) {
-        List<Error> errors = getErrors(cmdResponse);
-        return errors.isEmpty() ? Error.NO_ERROR : errors.get(0);
+    public static ApiError getError(Object cmdResponse) {
+        List<ApiError> apiErrors = getErrors(cmdResponse);
+        return apiErrors.isEmpty() ? ApiError.NO_API_ERROR : apiErrors.get(0);
     }
 
-    private static Error getError(Map<String, String> item) {
+    private static ApiError getError(Map<String, String> item) {
         String id = getStringValue(item, Const.ID);
         String explain = getStringValue(item, Const.EXPLAIN);
-        return new Error(id, explain);
+        return new ApiError(id, explain);
     }
 
     /**
@@ -173,6 +174,30 @@ public final class DataExtractUtils {
         }
 
         return new SmtpInfo(email, syntax, status, domain, mx, ip, ptr, code, dsn, message);
+    }
+
+    /**
+     * Gets subscription list.
+     *
+     * @param cmdResponse parsed command response
+     * @return subscription list, never {@code null}
+     */
+    public static List<? extends SubscriptionInfo> getSubscriptionList(Object cmdResponse) {
+        List<SubscriptionInfo> result = new ArrayList<>();
+        List<Map<String, String>> items = getList((Map<String, List<Map<String, String>>>) cmdResponse, Const.LIST);
+        if (items != null) {
+            for (Map<String, String> entry : items) {
+                result.add(getSubscriptionInfo(entry));
+            }
+        }
+        return result;
+    }
+
+    private static SubscriptionInfo getSubscriptionInfo(Map<String, String> entry) {
+        String id = getStringValue(entry, Const.ID);
+        String name = getStringValue(entry, Const.NAME);
+        boolean system = getBoolean(entry, Const.SYSTEM);
+        return new SubscriptionInfo(id, name, system);
     }
 
     /**

@@ -63,7 +63,9 @@ public enum Const {
     /** Message. */
     MESSAGE("message"),
     /** Newbie. */
-    NEWBIE("newbie");
+    NEWBIE("newbie"),
+    /** System. */
+    SYSTEM("system");
 
     private final String paramName;
     private final String defaultValue;

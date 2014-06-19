@@ -22,6 +22,8 @@ public enum ErrorCode {
     WRONG_COOKIE("error/member/wrongcookie"),
     /** Group not exist. */
     GROUP_NOT_EXIST("group_id_not_exists"),
+    /** Wrong group id. */
+    WRONG_GROUP_ID("wrong_group_id"),
     /** Empty name.*/
     ERROR_PROFILE_EMPTYNAME("error/profile/emptyname");
 
