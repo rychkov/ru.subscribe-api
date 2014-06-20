@@ -10,9 +10,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import ru.subscribe.pro.api.command.Const;
 import ru.subscribe.pro.api.dto.AddressType;
@@ -29,8 +31,6 @@ import ru.subscribe.pro.api.dto.SubscriptionInfo;
  * @author Yuri Rychkov
  */
 public final class DataExtractUtils {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DataExtractUtils.class);
-
     private DataExtractUtils() {
     }
 
@@ -40,8 +40,8 @@ public final class DataExtractUtils {
      * @param cmdResponse parsed command response
      * @return redirect part
      */
-    public static String getRedirect(Object cmdResponse) {
-        return getStringValue((Map<String, String>) cmdResponse, Const.REDIRECT);
+    public static String getRedirect(JsonElement cmdResponse) {
+        return getStringValue(cmdResponse, Const.REDIRECT);
     }
 
     /**
@@ -50,8 +50,8 @@ public final class DataExtractUtils {
      * @param cmdResponse parsed command response
      * @return session id
      */
-    public static String getSessionId(Object cmdResponse) {
-        return getStringValue((Map<String, String>) cmdResponse, Const.SESSION);
+    public static String getSessionId(JsonElement cmdResponse) {
+        return getStringValue(cmdResponse, Const.SESSION);
     }
 
     /**
@@ -60,13 +60,13 @@ public final class DataExtractUtils {
      * @param cmdResponse parsed command response
      * @return error errors collection or empty, never {@code null}
      */
-    public static List<ApiError> getErrors(Object cmdResponse) {
+    public static List<ApiError> getErrors(JsonElement cmdResponse) {
         List<ApiError> apiErrors;
-        List<Map<String, String>> errorsObj = getList((Map<String, List<Map<String, String>>>) cmdResponse, Const.ERRORS);
-        if (errorsObj != null) {
-            apiErrors = new ArrayList<>(errorsObj.size());
-            for (Map<String, String> item : errorsObj) {
-                ApiError e = getError(item);
+        JsonArray items = getList(cmdResponse, Const.ERRORS);
+        if (items != null && items.size() > 0) {
+            apiErrors = new ArrayList<>(items.size());
+            for (JsonElement entry : items) {
+                ApiError e = getSingleError(entry);
                 apiErrors.add(e);
             }
         } else {
@@ -81,12 +81,12 @@ public final class DataExtractUtils {
      * @param cmdResponse parsed command response
      * @return error or Error.NO_ERROR if no error
      */
-    public static ApiError getError(Object cmdResponse) {
+    public static ApiError getError(JsonElement cmdResponse) {
         List<ApiError> apiErrors = getErrors(cmdResponse);
         return apiErrors.isEmpty() ? ApiError.NO_API_ERROR : apiErrors.get(0);
     }
 
-    private static ApiError getError(Map<String, String> item) {
+    private static ApiError getSingleError(JsonElement item) {
         String id = getStringValue(item, Const.ID);
         String explain = getStringValue(item, Const.EXPLAIN);
         return new ApiError(id, explain);
@@ -98,12 +98,12 @@ public final class DataExtractUtils {
      * @param cmdResponse parsed command response
      * @return group list, never {@code null}
      */
-    public static List<Group> getGroupList(Object cmdResponse) {
+    public static List<Group> getGroupList(JsonElement cmdResponse) {
         List<Group> result = new ArrayList<>();
-        List<Map<String, String>> items = getList((Map<String, List<Map<String, String>>>) cmdResponse, Const.LIST);
-        if (items != null) {
-            for (Map<String, String> entry : items) {
-                result.add(getGroup(entry));
+        JsonArray items = getList(cmdResponse, Const.LIST);
+        if (items != null && items.size() > 0) {
+            for (JsonElement item : items) {
+                result.add(getGroup(item));
             }
         }
         return result;
@@ -115,12 +115,12 @@ public final class DataExtractUtils {
      * @param cmdResponse parsed command response
      * @return group info or {@code null}
      */
-    public static Group getGroup(Object cmdResponse) {
-        Map<String, String> entry = getMap((Map<String, Map<String, String>>) cmdResponse, Const.OBJECT);
-        return entry == null ? null : getGroup(entry);
+    public static Group getGroup(JsonElement cmdResponse) {
+        JsonObject entry = getMap(cmdResponse, Const.OBJECT);
+        return entry == null ? null : getSingleGroup(entry);
     }
 
-    private static Group getGroup(Map<String, String> entry) {
+    private static Group getSingleGroup(JsonObject entry) {
         String id = getStringValue(entry, Const.ID);
         String name = getStringValue(entry, Const.NAME);
         GroupType type = GroupType.resolveByValue(getStringValue(entry, Const.GROUP_TYPE));
@@ -134,23 +134,25 @@ public final class DataExtractUtils {
      * @param cmdResponse parsed command response
      * @return map, never {@code null}
      */
-    public static Map<String, SmtpInfo> getSmtpInfoMap(Object cmdResponse) {
-        Map<String, Map> email2infoMap = getMap((Map<String, Map<String, Map>>) cmdResponse, Const.LIST);
-        if (email2infoMap == null) {
+    public static Map<String, SmtpInfo> getSmtpInfoMap(JsonElement cmdResponse) {
+        JsonObject email2infoMap = getMap(cmdResponse, Const.LIST);
+        Set<Map.Entry<String, JsonElement>> entries = email2infoMap.entrySet();
+        if (entries.isEmpty()) {
             return Collections.emptyMap();
         }
-        Map<String, SmtpInfo> result = new HashMap<>(email2infoMap.size());
-        for (Map.Entry<String, Map> entry : email2infoMap.entrySet()) {
+
+        Map<String, SmtpInfo> result = new HashMap<>(entries.size());
+        for (Map.Entry<String, JsonElement> entry : entries) {
             result.put(entry.getKey(), getSmtpInfo(entry.getValue()));
         }
         return result;
     }
 
-    private static SmtpInfo getSmtpInfo(Map value) {
+    private static SmtpInfo getSmtpInfo(JsonElement value) {
         String email = getStringValue(value, Const.EMAIL);
         String syntax = getStringValue(value, Const.SYNTAX);
 
-        Map smtp = getMap(value, Const.SMTP);
+        JsonObject smtp = getMap(value, Const.SMTP);
 
         SmtpStatus status = null;
         String domain = null;
@@ -167,7 +169,13 @@ public final class DataExtractUtils {
             domain = getStringValue(smtp, Const.DOMAIN);
             mx = getStringValue(smtp, Const.MX);
             ip = getStringValue(smtp, Const.IP);
-            ptr = getList(smtp, Const.PTR);
+            JsonArray prtArray = getList(smtp, Const.PTR);
+            if (prtArray != null && prtArray.size() > 0) {
+                ptr = new ArrayList<>(prtArray.size());
+                for (JsonElement aPrtArray : prtArray) {
+                    ptr.add(aPrtArray.getAsString());
+                }
+            }
             code = getStringValue(smtp, Const.CODE);
             dsn = getStringValue(smtp, Const.DSN);
             message = getStringValue(smtp, Const.MESSAGE);
@@ -182,18 +190,18 @@ public final class DataExtractUtils {
      * @param cmdResponse parsed command response
      * @return subscription list, never {@code null}
      */
-    public static List<? extends SubscriptionInfo> getSubscriptionList(Object cmdResponse) {
+    public static List<? extends SubscriptionInfo> getSubscriptionList(JsonElement cmdResponse) {
         List<SubscriptionInfo> result = new ArrayList<>();
-        List<Map<String, String>> items = getList((Map<String, List<Map<String, String>>>) cmdResponse, Const.LIST);
-        if (items != null) {
-            for (Map<String, String> entry : items) {
-                result.add(getSubscriptionInfo(entry));
+        JsonArray items = getList(cmdResponse, Const.LIST);
+        if (items != null && items.size() > 0) {
+            for (JsonElement item : items) {
+                result.add(getSubscriptionInfo(item));
             }
         }
         return result;
     }
 
-    private static SubscriptionInfo getSubscriptionInfo(Map<String, String> entry) {
+    private static SubscriptionInfo getSubscriptionInfo(JsonElement entry) {
         String id = getStringValue(entry, Const.ID);
         String name = getStringValue(entry, Const.NAME);
         boolean system = getBoolean(entry, Const.SYSTEM);
@@ -207,19 +215,22 @@ public final class DataExtractUtils {
      * @param key key
      * @return value
      */
-    public static boolean getBoolean(Object cmdResponse, Const key) {
-        return Integer.parseInt(getStringValue((Map<String, String>) cmdResponse, key)) != 0;
+    public static boolean getBoolean(JsonElement cmdResponse, Const key) {
+        return Integer.parseInt(getStringValue(cmdResponse, key)) != 0;
     }
 
-    private static <T> List<T> getList(Map<String, List<T>> cmdResponse, Const key) {
-        return cmdResponse.get(key.getParamName());
+    private static JsonArray getList(JsonElement cmdResponse, Const key) {
+        JsonElement jsonElement = cmdResponse.getAsJsonObject().get(key.getParamName());
+        return jsonElement == null ? null : jsonElement.getAsJsonArray();
     }
 
-    private static <K, V> Map<K, V> getMap(Map<String, Map<K, V>> cmdResponse, Const key) {
-        return cmdResponse.get(key.getParamName());
+    private static JsonObject getMap(JsonElement cmdResponse, Const key) {
+        JsonElement jsonElement = cmdResponse.getAsJsonObject().get(key.getParamName());
+        return jsonElement == null ? null : jsonElement.getAsJsonObject();
     }
 
-    private static String getStringValue(Map<String, String> cmdResponse, Const key) {
-        return ((Map<String, String>) cmdResponse).get(key.getParamName());
+    private static String getStringValue(JsonElement cmdResponse, Const key) {
+        JsonElement jsonElement = cmdResponse.getAsJsonObject().get(key.getParamName());
+        return jsonElement == null ? null : jsonElement.getAsString();
     }
 }

@@ -44,7 +44,6 @@ import ru.subscribe.pro.api.exception.NeedChangePasswordException;
 import ru.subscribe.pro.api.exception.TooManyRedirectionException;
 import ru.subscribe.pro.api.exception.UnauthorizedException;
 import ru.subscribe.pro.api.utils.DataExtractUtils;
-import ru.subscribe.pro.api.utils.JsonUtils;
 
 /**
  * Connection.
@@ -115,11 +114,11 @@ public class Connection {
      * @throws java.io.IOException if IO errors occurred
      * @throws ru.subscribe.pro.api.exception.BaseException       on API error
      */
-    protected Object sendCommand(BaseCommand cmd) throws IOException, BaseException {
+    protected JsonElement sendCommand(BaseCommand cmd) throws IOException, BaseException {
         return sendInternal(cmd, getRequestId());
     }
 
-    private Object sendInternal(BaseCommand cmd, long requestId) throws IOException, BaseException {
+    private JsonElement sendInternal(BaseCommand cmd, long requestId) throws IOException, BaseException {
         try {
             String value = GSON.toJson(cmd);
             if (LOGGER.isTraceEnabled()) {
@@ -143,16 +142,17 @@ public class Connection {
                 LOGGER.trace("RESPONSE: {}", json);
             }
             long start = System.currentTimeMillis();
-            Object cmdResponse = JsonUtils.parse(json);
+            JsonElement cmdResponse = PARSER.parse(json);
             long stop = System.currentTimeMillis();
             LOGGER.trace("Response gson -> {} | {}", (stop - start), cmdResponse);
-            checkAuthError(cmdResponse);
             String redirect = DataExtractUtils.getRedirect(cmdResponse);
             if (StringUtils.isNotBlank(redirect)) {
                 redirectCount++;
                 redirectSuffix = redirect;
                 checkRedirectCount();
                 return sendInternal(cmd, getRequestId());
+            } else {
+                checkAuthError(cmdResponse);
             }
             return cmdResponse;
         } catch (URISyntaxException e) {
@@ -160,7 +160,7 @@ public class Connection {
         }
     }
 
-    private void checkAuthError(Object cmdResponse) throws BaseException {
+    private void checkAuthError(JsonElement cmdResponse) throws BaseException {
         Collection<ApiError> apiErrors = DataExtractUtils.getErrors(cmdResponse);
         if (!apiErrors.isEmpty()) {
             for (ApiError e : apiErrors) {

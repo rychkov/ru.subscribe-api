@@ -13,6 +13,8 @@ import org.apache.http.client.HttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.JsonElement;
+
 import ru.subscribe.pro.api.command.BaseCommand;
 import ru.subscribe.pro.api.command.CreateGroup;
 import ru.subscribe.pro.api.command.DeleteGroup;
@@ -123,7 +125,7 @@ public class Session {
      */
     public List<? extends SubscriptionInfo> getSubscriptionsList() throws IOException, BaseException {
         GetSubscriptionsList cmd = new GetSubscriptionsList(getId());
-        Object response = sendCommandAndCheckErrors(cmd);
+        JsonElement response = sendCommandAndCheckErrors(cmd);
         return DataExtractUtils.getSubscriptionList(response);
     }
 
@@ -136,7 +138,7 @@ public class Session {
 //     */
 //    public void getSubscription(String subscriptionId) throws IOException, BaseException {
 //        GetSubscription cmd = new GetSubscription(getId(), subscriptionId);
-//        Object response = sendCommand(cmd);
+//        JsonElement response = sendCommand(cmd);
 //        //FIXME
 //        response.toString();
 //    }
@@ -150,7 +152,7 @@ public class Session {
 //     */
 //    public void getMember(String email) throws IOException, BaseException {
 //        GetMember cmd = new GetMember(getId(), email);
-//        Object response = sendCommand(cmd);
+//        JsonElement response = sendCommand(cmd);
 //        //FIXME
 //        response.toString();
 //    }
@@ -164,7 +166,7 @@ public class Session {
      */
     public List<Group> getGroupList() throws IOException, BaseException {
         GetGroupList cmd = new GetGroupList(getId());
-        Object response = sendCommandAndCheckErrors(cmd);
+        JsonElement response = sendCommandAndCheckErrors(cmd);
         return DataExtractUtils.getGroupList(response);
     }
 
@@ -178,7 +180,7 @@ public class Session {
      */
     public Group getGroup(String groupId) throws IOException, BaseException {
         GetGroup cmd = new GetGroup(getId(), groupId);
-        Object response = sendCommandAndCheckErrors(cmd);
+        JsonElement response = sendCommandAndCheckErrors(cmd);
         return DataExtractUtils.getGroup(response);
     }
 
@@ -205,7 +207,7 @@ public class Session {
      */
     public ApiError createGroup(Group group, String issuePassword) throws IOException, BaseException {
         CreateGroup cmd = new CreateGroup(getId(), group, issuePassword);
-        Object response = sendCommandAndCheckErrors(cmd);
+        JsonElement response = sendCommandAndCheckErrors(cmd);
         return DataExtractUtils.getError(response);
     }
 
@@ -219,7 +221,7 @@ public class Session {
      */
     public ApiError deleteGroup(String groupId) throws IOException, BaseException {
         DeleteGroup cmd = new DeleteGroup(getId(), groupId);
-        Object response = sendCommandAndCheckErrors(cmd);
+        JsonElement response = sendCommandAndCheckErrors(cmd);
         return DataExtractUtils.getError(response);
     }
 
@@ -233,7 +235,7 @@ public class Session {
      */
     public Map<String, SmtpInfo> testEmails(List<String> emails) throws IOException, BaseException {
         TestEmail cmd = new TestEmail(getId(), emails);
-        Object response = sendCommandAndCheckErrors(cmd);
+        JsonElement response = sendCommandAndCheckErrors(cmd);
         return DataExtractUtils.getSmtpInfoMap(response);
     }
 
@@ -284,7 +286,7 @@ public class Session {
         sendCommandAndCheckErrors(cmd);
     }
 
-    private void checkAndSetSessionId(Object cmdResponse) throws BaseException {
+    private void checkAndSetSessionId(JsonElement cmdResponse) throws BaseException {
         String cmdResponseSessionId = DataExtractUtils.getSessionId(cmdResponse);
         if (StringUtils.isEmpty(id) && cmdResponseSessionId != null) {
             id = cmdResponseSessionId;
@@ -295,27 +297,27 @@ public class Session {
         }
     }
 
-    private Object sendCommand(BaseCommand cmd) throws IOException, BaseException {
+    private JsonElement sendCommand(BaseCommand cmd) throws IOException, BaseException {
         return sendCommand(cmd, true);
     }
 
-    private Object sendCommand(BaseCommand cmd, boolean checkSession) throws IOException, BaseException {
-        Object result = connection.sendCommand(cmd);
+    private JsonElement sendCommand(BaseCommand cmd, boolean checkSession) throws IOException, BaseException {
+        JsonElement result = connection.sendCommand(cmd);
         if (checkSession) {
             checkAndSetSessionId(result);
         }
         return result;
     }
 
-    private void checkErrors(Object cmdResponse) throws BaseException {
+    private void checkErrors(JsonElement cmdResponse) throws BaseException {
         List<ApiError> apiErrors = DataExtractUtils.getErrors(cmdResponse);
         if (!apiErrors.isEmpty()) {
             throw new BaseApiErrorException(apiErrors.get(0));
         }
     }
 
-    private Object sendCommandAndCheckErrors(BaseCommand cmd) throws IOException, BaseException {
-        Object cmdResponse = sendCommand(cmd);
+    private JsonElement sendCommandAndCheckErrors(BaseCommand cmd) throws IOException, BaseException {
+        JsonElement cmdResponse = sendCommand(cmd);
         checkErrors(cmdResponse);
         return cmdResponse;
     }

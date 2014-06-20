@@ -5,6 +5,8 @@
 
 package ru.subscribe.pro.api.exception;
 
+import com.google.gson.JsonElement;
+
 import ru.subscribe.pro.api.dto.ApiError;
 
 /**
@@ -13,7 +15,7 @@ import ru.subscribe.pro.api.dto.ApiError;
  * @author Yuri Rychkov
  */
 public class UnauthorizedException extends BaseApiErrorException {
-    private Object details;
+    private JsonElement details;
 
     /**
      * Constructor.
@@ -21,12 +23,12 @@ public class UnauthorizedException extends BaseApiErrorException {
      * @param apiError API error
      * @param details details
      */
-    public UnauthorizedException(ApiError apiError, Object details) {
+    public UnauthorizedException(ApiError apiError, JsonElement details) {
         super(apiError);
         this.details = details;
     }
 
-    public Object getDetails() {
+    public JsonElement getDetails() {
         return details;
     }
 }
