@@ -103,7 +103,7 @@ public final class DataExtractUtils {
         JsonArray items = getList(cmdResponse, Const.LIST);
         if (items != null && items.size() > 0) {
             for (JsonElement item : items) {
-                result.add(getGroup(item));
+                result.add(getSingleGroup(item.getAsJsonObject()));
             }
         }
         return result;

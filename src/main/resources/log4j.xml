@@ -8,7 +8,7 @@
         </layout>
     </appender>
 
-    <logger name="ru">
+    <logger name="ru.subscribe.pro">
         <level value="TRACE"/>
     </logger>
 
