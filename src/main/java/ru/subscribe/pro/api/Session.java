@@ -19,6 +19,7 @@ import ru.subscribe.pro.api.command.BaseCommand;
 import ru.subscribe.pro.api.command.CreateGroup;
 import ru.subscribe.pro.api.command.DeleteGroup;
 import ru.subscribe.pro.api.command.DeleteMember;
+import ru.subscribe.pro.api.command.GetFormatList;
 import ru.subscribe.pro.api.command.GetGroup;
 import ru.subscribe.pro.api.command.GetGroupList;
 import ru.subscribe.pro.api.command.GetMember;
@@ -326,6 +327,18 @@ public class Session {
      */
     public JsonElement getRfsList(RfsDomain domain, String path) throws IOException, BaseException {
         GetRfsList cmd = new GetRfsList(getId(), domain, path);
+        return sendCommandAndCheckErrors(cmd);
+    }
+
+    /**
+     * Get format list.
+     *
+     * @return json
+     * @throws java.io.IOException if IO errors occurred
+     * @throws BaseException       on API error
+     */
+    public JsonElement getFormatList() throws IOException, BaseException {
+        GetFormatList cmd = new GetFormatList(getId());
         return sendCommandAndCheckErrors(cmd);
     }
 
