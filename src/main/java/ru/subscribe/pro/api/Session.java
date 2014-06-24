@@ -22,6 +22,7 @@ import ru.subscribe.pro.api.command.DeleteMember;
 import ru.subscribe.pro.api.command.GetFormatList;
 import ru.subscribe.pro.api.command.GetGroup;
 import ru.subscribe.pro.api.command.GetGroupList;
+import ru.subscribe.pro.api.command.GetLinkList;
 import ru.subscribe.pro.api.command.GetMember;
 import ru.subscribe.pro.api.command.GetRfsList;
 import ru.subscribe.pro.api.command.GetSubscriptionsList;
@@ -339,6 +340,18 @@ public class Session {
      */
     public JsonElement getFormatList() throws IOException, BaseException {
         GetFormatList cmd = new GetFormatList(getId());
+        return sendCommandAndCheckErrors(cmd);
+    }
+
+    /**
+     * Get link list.
+     *
+     * @return json
+     * @throws java.io.IOException if IO errors occurred
+     * @throws BaseException       on API error
+     */
+    public JsonElement getLinkList() throws IOException, BaseException {
+        GetLinkList cmd = new GetLinkList(getId());
         return sendCommandAndCheckErrors(cmd);
     }
 
