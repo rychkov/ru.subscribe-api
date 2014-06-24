@@ -28,6 +28,9 @@ public enum Action {
     ANKETA_QUEST_RESPONSE_DELETE("anketa.quest.response.delete"),
     ANKETA_QUEST_RESPONSE_ORDER("anketa.quest.response.order"),
 
+    TRACK_LIST("track.list"),
+    TRACK_GET("track.get"),
+
     EMAIL_TEST("email.test"),
 
     MEMBER_GET("member.get"),

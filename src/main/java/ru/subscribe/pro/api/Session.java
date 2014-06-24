@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.JsonElement;
 
+import ru.subscribe.pro.api.command.Action;
 import ru.subscribe.pro.api.command.BaseCommand;
 import ru.subscribe.pro.api.command.CreateGroup;
 import ru.subscribe.pro.api.command.DeleteGroup;
@@ -30,6 +31,8 @@ import ru.subscribe.pro.api.command.GetMember;
 import ru.subscribe.pro.api.command.GetRfsList;
 import ru.subscribe.pro.api.command.GetSubscriptionsList;
 import ru.subscribe.pro.api.command.GetSystemSettings;
+import ru.subscribe.pro.api.command.GetTrack;
+import ru.subscribe.pro.api.command.GetTrackList;
 import ru.subscribe.pro.api.command.GetUserList;
 import ru.subscribe.pro.api.command.Login;
 import ru.subscribe.pro.api.command.Logout;
@@ -127,6 +130,32 @@ public class Session {
     public void pong() throws IOException, BaseException {
         Pong cmd = new Pong(getId());
         sendCommandAndCheckErrors(cmd);
+    }
+
+    /**
+     * Get track list.
+     *
+     * @param action filtered action
+     * @return json
+     * @throws java.io.IOException if IO errors occurred
+     * @throws BaseException       on API error
+     */
+    public JsonElement getTrackList(Action action) throws IOException, BaseException {
+        GetTrackList cmd = new GetTrackList(getId(), action);
+        return sendCommandAndCheckErrors(cmd);
+    }
+
+    /**
+     * Get track.
+     *
+     * @param trackId track id
+     * @return json
+     * @throws java.io.IOException if IO errors occurred
+     * @throws BaseException       on API error
+     */
+    public JsonElement getTrack(String trackId) throws IOException, BaseException {
+        GetTrack cmd = new GetTrack(getId(), trackId);
+        return sendCommandAndCheckErrors(cmd);
     }
 
     /**
