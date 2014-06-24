@@ -6,7 +6,7 @@
 package ru.subscribe.pro.api.command;
 
 /**
- * Send mail to Ded Moroz AKA Santa Claus.
+ * Send mail to Ded Moroz AKA Santa Claus AKA send mail to support :).
  *
  * @author Yuri Rychkov
  */
