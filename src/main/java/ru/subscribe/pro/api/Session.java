@@ -18,8 +18,11 @@ import com.google.gson.JsonElement;
 import ru.subscribe.pro.api.command.BaseCommand;
 import ru.subscribe.pro.api.command.CreateGroup;
 import ru.subscribe.pro.api.command.DeleteGroup;
+import ru.subscribe.pro.api.command.DeleteMember;
 import ru.subscribe.pro.api.command.GetGroup;
 import ru.subscribe.pro.api.command.GetGroupList;
+import ru.subscribe.pro.api.command.GetMember;
+import ru.subscribe.pro.api.command.GetRfsList;
 import ru.subscribe.pro.api.command.GetSubscriptionsList;
 import ru.subscribe.pro.api.command.Login;
 import ru.subscribe.pro.api.command.Logout;
@@ -31,6 +34,7 @@ import ru.subscribe.pro.api.dto.ActionPolicy;
 import ru.subscribe.pro.api.dto.AddressType;
 import ru.subscribe.pro.api.dto.ApiError;
 import ru.subscribe.pro.api.dto.Group;
+import ru.subscribe.pro.api.dto.RfsDomain;
 import ru.subscribe.pro.api.dto.SmtpInfo;
 import ru.subscribe.pro.api.dto.SubscriptionInfo;
 import ru.subscribe.pro.api.exception.BaseApiErrorException;
@@ -284,6 +288,45 @@ public class Session {
                                String ip) throws IOException, BaseException {
         SetGroupMember cmd = new SetGroupMember(getId(), address, type, ActionPolicy.UPDATE, includeGroupIds, excludeGroupIds, ip);
         sendCommandAndCheckErrors(cmd);
+    }
+
+    /**
+     * Get member info.
+     *
+     * @param address address
+     * @return json
+     * @throws java.io.IOException if IO errors occurred
+     * @throws BaseException       on API error
+     */
+    public JsonElement getMember(String address) throws IOException, BaseException {
+        GetMember cmd = new GetMember(getId(), address);
+        return sendCommandAndCheckErrors(cmd);
+    }
+
+    /**
+     * Delete member.
+     *
+     * @param address address
+     * @throws java.io.IOException if IO errors occurred
+     * @throws BaseException       on API error
+     */
+    public void deleteMember(String address) throws IOException, BaseException {
+        DeleteMember cmd = new DeleteMember(getId(), address);
+        sendCommandAndCheckErrors(cmd);
+    }
+
+    /**
+     * Get RFS list.
+     *
+     * @param domain domain
+     * @param path path
+     * @return json
+     * @throws java.io.IOException if IO errors occurred
+     * @throws BaseException       on API error
+     */
+    public JsonElement getRfsList(RfsDomain domain, String path) throws IOException, BaseException {
+        GetRfsList cmd = new GetRfsList(getId(), domain, path);
+        return sendCommandAndCheckErrors(cmd);
     }
 
     private void checkAndSetSessionId(JsonElement cmdResponse) throws BaseException {

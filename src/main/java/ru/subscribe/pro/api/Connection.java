@@ -39,6 +39,7 @@ import ru.subscribe.pro.api.dto.ActionPolicy;
 import ru.subscribe.pro.api.dto.AddressType;
 import ru.subscribe.pro.api.dto.ApiError;
 import ru.subscribe.pro.api.dto.GroupType;
+import ru.subscribe.pro.api.dto.RfsDomain;
 import ru.subscribe.pro.api.exception.BaseException;
 import ru.subscribe.pro.api.exception.NeedChangePasswordException;
 import ru.subscribe.pro.api.exception.TooManyRedirectionException;
@@ -82,12 +83,19 @@ public class Connection {
             return policy == null ? JsonNull.INSTANCE : new JsonPrimitive(policy.getValue());
         }
     };
+    private static final JsonSerializer<RfsDomain> RFS_DOMAIN_JSON_SERIALIZER = new JsonSerializer<RfsDomain>() {
+        @Override
+        public JsonElement serialize(RfsDomain domain, Type type, JsonSerializationContext jsonSerializationContext) {
+            return domain == null ? JsonNull.INSTANCE : new JsonPrimitive(domain.getValue());
+        }
+    };
 
     private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(Action.class, ACTION_JSON_SERIALIZER)
             .registerTypeAdapter(GroupType.class, GROUP_TYPE_JSON_SERIALIZER)
             .registerTypeAdapter(AddressType.class, ADDRESS_TYPE_JSON_SERIALIZER)
             .registerTypeAdapter(ActionPolicy.class, ACTION_POLICY_JSON_SERIALIZER)
+            .registerTypeAdapter(RfsDomain.class, RFS_DOMAIN_JSON_SERIALIZER)
             .create();
 
     private static final JsonParser PARSER = new JsonParser();
