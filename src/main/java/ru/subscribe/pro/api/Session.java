@@ -27,6 +27,7 @@ import ru.subscribe.pro.api.command.GetMember;
 import ru.subscribe.pro.api.command.GetRfsList;
 import ru.subscribe.pro.api.command.GetSubscriptionsList;
 import ru.subscribe.pro.api.command.GetSystemSettings;
+import ru.subscribe.pro.api.command.GetUserList;
 import ru.subscribe.pro.api.command.Login;
 import ru.subscribe.pro.api.command.Logout;
 import ru.subscribe.pro.api.command.Ping;
@@ -365,6 +366,18 @@ public class Session {
      */
     public JsonElement getSystemSettings() throws IOException, BaseException {
         GetSystemSettings cmd = new GetSystemSettings(getId());
+        return sendCommandAndCheckErrors(cmd);
+    }
+
+    /**
+     * Get user list.
+     *
+     * @return json
+     * @throws java.io.IOException if IO errors occurred
+     * @throws BaseException       on API error
+     */
+    public JsonElement getUserList() throws IOException, BaseException {
+        GetUserList cmd = new GetUserList(getId());
         return sendCommandAndCheckErrors(cmd);
     }
 
