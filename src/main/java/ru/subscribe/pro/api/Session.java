@@ -32,6 +32,8 @@ import ru.subscribe.pro.api.command.Login;
 import ru.subscribe.pro.api.command.Logout;
 import ru.subscribe.pro.api.command.Ping;
 import ru.subscribe.pro.api.command.Pong;
+import ru.subscribe.pro.api.command.SendMailToSanta;
+import ru.subscribe.pro.api.command.SendMailToSupport;
 import ru.subscribe.pro.api.command.SetGroupMember;
 import ru.subscribe.pro.api.command.TestEmail;
 import ru.subscribe.pro.api.dto.ActionPolicy;
@@ -379,6 +381,32 @@ public class Session {
     public JsonElement getUserList() throws IOException, BaseException {
         GetUserList cmd = new GetUserList(getId());
         return sendCommandAndCheckErrors(cmd);
+    }
+
+    /**
+     * Send mail to Santa.
+     * @param email sender email
+     * @param message message
+     *
+     * @throws java.io.IOException if IO errors occurred
+     * @throws BaseException       on API error
+     */
+    public void sendMailToSanta(String email, String message) throws IOException, BaseException {
+        SendMailToSanta cmd = new SendMailToSanta(getId(), email, message);
+        sendCommandAndCheckErrors(cmd);
+    }
+
+    /**
+     * Send mail to support.
+     * @param email sender email
+     * @param message message
+     *
+     * @throws java.io.IOException if IO errors occurred
+     * @throws BaseException       on API error
+     */
+    public void sendMailToSupport(String email, String message) throws IOException, BaseException {
+        SendMailToSupport cmd = new SendMailToSupport(getId(), email, message);
+        sendCommandAndCheckErrors(cmd);
     }
 
     private void checkAndSetSessionId(JsonElement cmdResponse) throws BaseException {
