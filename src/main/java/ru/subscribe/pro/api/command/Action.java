@@ -60,6 +60,12 @@ public enum Action {
     GROUP_SNAPSHOT("group.snapshot"),
     GROUP_CLEAN("group.clean"),
 
+    ISSUE_SEND("issue.send"),
+    ISSUE_LATER_LIST("issue.later.list"),
+    ISSUE_LATER_GET("issue.later.get"),
+    ISSUE_LATER_SEND("issue.later.send"),
+    ISSUE_LATER_DELETE("issue.later.delete"),
+
     FORMAT_LIST("format.list"),
     FORMAT_GET("format.get"),
     FORMAT_SET("format.set"),

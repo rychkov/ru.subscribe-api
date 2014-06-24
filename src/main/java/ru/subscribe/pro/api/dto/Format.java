@@ -6,36 +6,40 @@
 package ru.subscribe.pro.api.dto;
 
 /**
- * Remote file system domain.
+ * Format.
  *
  * @author Yuri Rychkov
  */
-public enum RfsDomain {
-    /** Image. */
-    IMAGE("image"),
-    /** Report. */
-    REPORT("report");
+public enum Format {
+    /** Email both html and text. */
+    EMAIL("email"),
+    /** SMS. */
+    SMS("sms"),
+    /** HTML. */
+    HTML("html"),
+    /** Text. */
+    TEXT("text");
 
     private final String value;
 
-    private RfsDomain(String value) {
+    private Format(String value) {
         this.value = value;
     }
 
     /**
-     * Resolve domain type by value.
+     * Resolve format by value.
      *
      * @param value value
-     * @return domain type
+     * @return format
      * @throws NullPointerException if value is {@code null}
      * @throws IllegalArgumentException for unknown values
      */
-    public static RfsDomain resolveByValue(String value) {
+    public static Format resolveByValue(String value) {
         if (value == null) {
             throw new NullPointerException("value is null");
         }
 
-        for (RfsDomain type : values()) {
+        for (Format type : values()) {
             if (type.value.equalsIgnoreCase(value)) {
                 return type;
             }

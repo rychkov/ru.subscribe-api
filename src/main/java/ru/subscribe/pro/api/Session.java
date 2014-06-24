@@ -18,10 +18,13 @@ import com.google.gson.JsonElement;
 import ru.subscribe.pro.api.command.BaseCommand;
 import ru.subscribe.pro.api.command.CreateGroup;
 import ru.subscribe.pro.api.command.DeleteGroup;
+import ru.subscribe.pro.api.command.DeleteLaterIssue;
 import ru.subscribe.pro.api.command.DeleteMember;
 import ru.subscribe.pro.api.command.GetFormatList;
 import ru.subscribe.pro.api.command.GetGroup;
 import ru.subscribe.pro.api.command.GetGroupList;
+import ru.subscribe.pro.api.command.GetLaterIssue;
+import ru.subscribe.pro.api.command.GetLaterIssueList;
 import ru.subscribe.pro.api.command.GetLinkList;
 import ru.subscribe.pro.api.command.GetMember;
 import ru.subscribe.pro.api.command.GetRfsList;
@@ -385,9 +388,9 @@ public class Session {
 
     /**
      * Send mail to Santa.
+     *
      * @param email sender email
      * @param message message
-     *
      * @throws java.io.IOException if IO errors occurred
      * @throws BaseException       on API error
      */
@@ -398,14 +401,51 @@ public class Session {
 
     /**
      * Send mail to support.
+     *
      * @param email sender email
      * @param message message
-     *
      * @throws java.io.IOException if IO errors occurred
      * @throws BaseException       on API error
      */
     public void sendMailToSupport(String email, String message) throws IOException, BaseException {
         SendMailToSupport cmd = new SendMailToSupport(getId(), email, message);
+        sendCommandAndCheckErrors(cmd);
+    }
+
+    /**
+     * Get later issue list.
+     *
+     * @return json
+     * @throws java.io.IOException if IO errors occurred
+     * @throws BaseException       on API error
+     */
+    public JsonElement getLaterIssueList() throws IOException, BaseException {
+        GetLaterIssueList cmd = new GetLaterIssueList(getId());
+        return sendCommandAndCheckErrors(cmd);
+    }
+
+    /**
+     * Get later issue.
+     *
+     * @param issueId issue id
+     * @return json
+     * @throws java.io.IOException if IO errors occurred
+     * @throws BaseException       on API error
+     */
+    public JsonElement getLaterIssue(String issueId) throws IOException, BaseException {
+        GetLaterIssue cmd = new GetLaterIssue(getId(), issueId);
+        return sendCommandAndCheckErrors(cmd);
+    }
+
+    /**
+     * Delete later issue.
+     *
+     * @param issueId issue id
+     * @throws java.io.IOException if IO errors occurred
+     * @throws BaseException       on API error
+     */
+    public void deleteLaterIssue(String issueId) throws IOException, BaseException {
+        DeleteLaterIssue cmd = new DeleteLaterIssue(getId(), issueId);
         sendCommandAndCheckErrors(cmd);
     }
 
