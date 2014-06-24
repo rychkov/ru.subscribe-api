@@ -65,7 +65,9 @@ public enum Const {
     /** Newbie. */
     NEWBIE("newbie"),
     /** System. */
-    SYSTEM("system");
+    SYSTEM("system"),
+    /** Action. */
+    ACTION("action");
 
     private final String paramName;
     private final String defaultValue;

@@ -25,6 +25,6 @@ public class GetTrackList extends SessionCommand {
      */
     public GetTrackList(String sessionId, Action filteredAction) {
         super(Action.TRACK_LIST, sessionId);
-        this.filter.put("action", filteredAction);
+        this.filter.put(Const.ACTION.getParamName(), filteredAction);
     }
 }
