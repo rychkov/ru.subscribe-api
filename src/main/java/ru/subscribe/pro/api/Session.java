@@ -19,11 +19,14 @@ import ru.subscribe.pro.api.command.Action;
 import ru.subscribe.pro.api.command.BaseCommand;
 import ru.subscribe.pro.api.command.CreateGroup;
 import ru.subscribe.pro.api.command.DeleteGroup;
+import ru.subscribe.pro.api.command.DeleteIssueDraft;
 import ru.subscribe.pro.api.command.DeleteLaterIssue;
 import ru.subscribe.pro.api.command.DeleteMember;
 import ru.subscribe.pro.api.command.GetFormatList;
 import ru.subscribe.pro.api.command.GetGroup;
 import ru.subscribe.pro.api.command.GetGroupList;
+import ru.subscribe.pro.api.command.GetIssueDraft;
+import ru.subscribe.pro.api.command.GetIssueDraftList;
 import ru.subscribe.pro.api.command.GetLaterIssue;
 import ru.subscribe.pro.api.command.GetLaterIssueList;
 import ru.subscribe.pro.api.command.GetLinkList;
@@ -46,6 +49,8 @@ import ru.subscribe.pro.api.dto.ActionPolicy;
 import ru.subscribe.pro.api.dto.AddressType;
 import ru.subscribe.pro.api.dto.ApiError;
 import ru.subscribe.pro.api.dto.Group;
+import ru.subscribe.pro.api.dto.IssueDraft;
+import ru.subscribe.pro.api.dto.IssueDraftInfo;
 import ru.subscribe.pro.api.dto.RfsDomain;
 import ru.subscribe.pro.api.dto.SmtpInfo;
 import ru.subscribe.pro.api.dto.SubscriptionInfo;
@@ -478,6 +483,47 @@ public class Session {
         sendCommandAndCheckErrors(cmd);
     }
 
+    /**
+     * Get issue draft list.
+     *
+     * @return issue draft info list, never {@code null}
+     * @throws java.io.IOException if IO errors occurred
+     * @throws BaseException       on API error
+     */
+    public List<IssueDraftInfo> getIssueDraftList() throws IOException, BaseException {
+        GetIssueDraftList cmd = new GetIssueDraftList(getId());
+        JsonElement response = sendCommandAndCheckErrors(cmd);
+        return DataExtractUtils.getIssueDraftList(response);
+    }
+
+    /**
+     * Gets issue draft.
+     *
+     * @param draftId draft id
+     * @return issue draft
+     * @throws java.io.IOException if IO errors occurred
+     * @throws BaseException       on API error
+     */
+    public IssueDraft getIssueDraft(String draftId) throws IOException, BaseException {
+        GetIssueDraft cmd = new GetIssueDraft(getId(), draftId);
+        JsonElement response = sendCommandAndCheckErrors(cmd);
+        return DataExtractUtils.getIssueDraft(response);
+    }
+
+    /**
+     * Delete issue draft.
+     *
+     * @param draftId draft id
+     * @return Error#NO_ERROR if success or other error
+     * @throws java.io.IOException if IO errors occurred
+     * @throws BaseException       on API error
+     */
+    public ApiError deleteIssueDraft(String draftId) throws IOException, BaseException {
+        DeleteIssueDraft cmd = new DeleteIssueDraft(getId(), draftId);
+        JsonElement response = sendCommandAndCheckErrors(cmd);
+        return DataExtractUtils.getError(response);
+    }
+
     private void checkAndSetSessionId(JsonElement cmdResponse) throws BaseException {
         String cmdResponseSessionId = DataExtractUtils.getSessionId(cmdResponse);
         if (StringUtils.isEmpty(id) && cmdResponseSessionId != null) {
@@ -508,7 +554,8 @@ public class Session {
         }
     }
 
-    private JsonElement sendCommandAndCheckErrors(BaseCommand cmd) throws IOException, BaseException {
+    //TODO set private
+    JsonElement sendCommandAndCheckErrors(BaseCommand cmd) throws IOException, BaseException {
         JsonElement cmdResponse = sendCommand(cmd);
         checkErrors(cmdResponse);
         return cmdResponse;

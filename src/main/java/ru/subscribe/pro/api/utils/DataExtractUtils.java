@@ -19,8 +19,11 @@ import com.google.gson.JsonObject;
 import ru.subscribe.pro.api.command.Const;
 import ru.subscribe.pro.api.dto.AddressType;
 import ru.subscribe.pro.api.dto.ApiError;
+import ru.subscribe.pro.api.dto.Format;
 import ru.subscribe.pro.api.dto.Group;
 import ru.subscribe.pro.api.dto.GroupType;
+import ru.subscribe.pro.api.dto.IssueDraft;
+import ru.subscribe.pro.api.dto.IssueDraftInfo;
 import ru.subscribe.pro.api.dto.SmtpInfo;
 import ru.subscribe.pro.api.dto.SmtpStatus;
 import ru.subscribe.pro.api.dto.SubscriptionInfo;
@@ -209,6 +212,61 @@ public final class DataExtractUtils {
     }
 
     /**
+     * Gets issue draft list.
+     *
+     * @param cmdResponse parsed command response
+     * @return issue draft list, never {@code null}
+     */
+    public static List<IssueDraftInfo> getIssueDraftList(JsonElement cmdResponse) {
+        List<IssueDraftInfo> result = new ArrayList<>();
+        JsonArray items = getList(cmdResponse, Const.LIST);
+        if (items != null && items.size() > 0) {
+            for (JsonElement item : items) {
+                result.add(getSingleIssueDraftInfo(item.getAsJsonObject()));
+            }
+        }
+        return result;
+    }
+
+    private static IssueDraftInfo getSingleIssueDraftInfo(JsonObject entry) {
+        String id = getStringValue(entry, Const.ID);
+        String name = getStringValue(entry, Const.NAME);
+        Format format = Format.resolveByValue(getStringValue(entry, Const.FORMAT));
+        boolean template = getBoolean(entry, Const.TEMPLATE);
+        return new IssueDraftInfo(id, name, template, format);
+    }
+
+    /**
+     * Gets issue draft.
+     *
+     * @param cmdResponse parsed command response
+     * @return issue draft
+     */
+    public static IssueDraft getIssueDraft(JsonElement cmdResponse) {
+        JsonObject entry = getMap(cmdResponse, Const.OBJECT);
+        return entry == null ? null : getSingleIssueDraft(entry);
+    }
+
+    private static IssueDraft getSingleIssueDraft(JsonObject entry) {
+        String id = getStringValue(entry, Const.ID);
+        String name = getStringValue(entry, Const.NAME);
+        Format format = Format.resolveByValue(getStringValue(entry, Const.FORMAT));
+        boolean template = getBoolean(entry, Const.TEMPLATE);
+        String division = getStringValue(entry, Const.DIVISION);
+        String from = getStringValue(entry, Const.FROM);
+        String sender = getStringValue(entry, Const.SENDER);
+        String replayEmail = getStringValue(entry, Const.REPLAY_EMAIL);
+        String replayName = getStringValue(entry, Const.REPLY_NAME);
+        String toName = getStringValue(entry, Const.TO_NAME);
+        String subject = getStringValue(entry, Const.SUBJECT);
+        String text = getStringValue(entry, Const.TEXT);
+        String templateThumbnailUrl = getStringValue(entry, Const.TEMPLATE_THUMBNAIL);
+
+        return new IssueDraft(id, name, template, format, division, from, sender, replayEmail,
+                replayName, toName, subject, text, templateThumbnailUrl);
+    }
+
+    /**
      * Gets boolean value.
      *
      * @param cmdResponse parsed command response
@@ -216,21 +274,34 @@ public final class DataExtractUtils {
      * @return value
      */
     public static boolean getBoolean(JsonElement cmdResponse, Const key) {
-        return Integer.parseInt(getStringValue(cmdResponse, key)) != 0;
+        String stringValue = getStringValue(cmdResponse, key);
+        if (stringValue != null) {
+            return Integer.parseInt(stringValue) != 0;
+        }
+        return false;
     }
 
     private static JsonArray getList(JsonElement cmdResponse, Const key) {
         JsonElement jsonElement = cmdResponse.getAsJsonObject().get(key.getParamName());
-        return jsonElement == null ? null : jsonElement.getAsJsonArray();
+        if (jsonElement == null || jsonElement.isJsonNull()) {
+            return null;
+        }
+        return jsonElement.getAsJsonArray();
     }
 
     private static JsonObject getMap(JsonElement cmdResponse, Const key) {
         JsonElement jsonElement = cmdResponse.getAsJsonObject().get(key.getParamName());
-        return jsonElement == null ? null : jsonElement.getAsJsonObject();
+        if (jsonElement == null || jsonElement.isJsonNull()) {
+            return null;
+        }
+        return jsonElement.getAsJsonObject();
     }
 
     private static String getStringValue(JsonElement cmdResponse, Const key) {
         JsonElement jsonElement = cmdResponse.getAsJsonObject().get(key.getParamName());
-        return jsonElement == null ? null : jsonElement.getAsString();
+        if (jsonElement == null || jsonElement.isJsonNull()) {
+            return null;
+        }
+        return jsonElement.getAsString();
     }
 }

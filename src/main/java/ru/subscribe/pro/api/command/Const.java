@@ -67,7 +67,35 @@ public enum Const {
     /** System. */
     SYSTEM("system"),
     /** Action. */
-    ACTION("action");
+    ACTION("action"),
+    /** Subject. */
+    SUBJECT("subject"),
+    /** From name. */
+    FROM_NAME("from.name"),
+    /** From email. */
+    FROM_EMAIL("from.email"),
+    /** Replay email. */
+    REPLAY_EMAIL("reply.email"),
+    /** Replay name. */
+    REPLY_NAME("reply.name"),
+    /** To name. */
+    TO_NAME("to.name"),
+    /** Group. */
+    GROUP("group"),
+    /** Format. */
+    FORMAT("format"),
+    /** Template. */
+    TEMPLATE("template"),
+    /** Division. */
+    DIVISION("division"),
+    /** From. */
+    FROM("from"),
+    /** Sender. */
+    SENDER("sender"),
+    /** Text. */
+    TEXT("text"),
+    /** Template thumbnail. */
+    TEMPLATE_THUMBNAIL("template.thumbnail");
 
     private final String paramName;
     private final String defaultValue;

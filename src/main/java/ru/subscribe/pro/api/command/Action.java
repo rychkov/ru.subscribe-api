@@ -69,6 +69,12 @@ public enum Action {
     ISSUE_LATER_SEND("issue.later.send"),
     ISSUE_LATER_DELETE("issue.later.delete"),
 
+    ISSUE_DRAFT_LIST("issue.draft.list"),
+    ISSUE_DRAFT_GET("issue.draft.get"),
+    ISSUE_DRAFT_SET("issue.draft.set"),
+    ISSUE_DRAFT_DELETE("issue.draft.delete"),
+    ISSUE_DRAFT_PREVIEW("issue.draft.preview"),
+
     FORMAT_LIST("format.list"),
     FORMAT_GET("format.get"),
     FORMAT_SET("format.set"),

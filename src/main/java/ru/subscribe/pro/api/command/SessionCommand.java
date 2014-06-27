@@ -26,4 +26,8 @@ public abstract class SessionCommand extends BaseCommand {
         super(action);
         this.sessionId = sessionId;
     }
+
+    public String getSessionId() {
+        return sessionId;
+    }
 }
