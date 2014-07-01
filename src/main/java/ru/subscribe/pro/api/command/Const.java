@@ -77,7 +77,7 @@ public enum Const {
     /** Replay email. */
     REPLAY_EMAIL("reply.email"),
     /** Replay name. */
-    REPLY_NAME("reply.name"),
+    REPLAY_NAME("reply.name"),
     /** To name. */
     TO_NAME("to.name"),
     /** Group. */

@@ -256,7 +256,7 @@ public final class DataExtractUtils {
         String from = getStringValue(entry, Const.FROM);
         String sender = getStringValue(entry, Const.SENDER);
         String replayEmail = getStringValue(entry, Const.REPLAY_EMAIL);
-        String replayName = getStringValue(entry, Const.REPLY_NAME);
+        String replayName = getStringValue(entry, Const.REPLAY_NAME);
         String toName = getStringValue(entry, Const.TO_NAME);
         String subject = getStringValue(entry, Const.SUBJECT);
         String text = getStringValue(entry, Const.TEXT);
