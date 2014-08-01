@@ -6,7 +6,7 @@
 
     <groupId>ru.subscribe.pro</groupId>
     <artifactId>ru.subscribe-api</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1</version>
     <name>Subscribe.ru Java API</name>
 
     <licenses>
@@ -40,6 +40,7 @@
                         <encoding>UTF-8</encoding>
                         <excludes>
                             ru/subscribe/pro/api/command/Action.java,
+                            ru/subscribe/pro/api/Connector.java
                         </excludes>
                     </configuration>
                     <executions>

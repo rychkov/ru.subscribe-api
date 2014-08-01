@@ -16,6 +16,8 @@ public enum Action {
     PING("ping"),
     PONG("pong"),
 
+    BATCH("batch"),
+
     ANKETA_LIST("anketa.list"),
     ANKETA_GET("anketa.get"),
     ANKETA_SET("anketa.set"),

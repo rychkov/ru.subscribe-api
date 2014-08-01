@@ -5,6 +5,7 @@
 package ru.subscribe.pro.api;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ import com.google.gson.JsonElement;
 
 import ru.subscribe.pro.api.command.Action;
 import ru.subscribe.pro.api.command.BaseCommand;
+import ru.subscribe.pro.api.command.BatchCommand;
 import ru.subscribe.pro.api.command.CreateGroup;
 import ru.subscribe.pro.api.command.DeleteGroup;
 import ru.subscribe.pro.api.command.DeleteIssueDraft;
@@ -43,6 +45,7 @@ import ru.subscribe.pro.api.command.Ping;
 import ru.subscribe.pro.api.command.Pong;
 import ru.subscribe.pro.api.command.SendMailToSanta;
 import ru.subscribe.pro.api.command.SendMailToSupport;
+import ru.subscribe.pro.api.command.SessionCommand;
 import ru.subscribe.pro.api.command.SetGroupMember;
 import ru.subscribe.pro.api.command.TestEmail;
 import ru.subscribe.pro.api.dto.ActionPolicy;
@@ -135,6 +138,20 @@ public class Session {
     public void pong() throws IOException, BaseException {
         Pong cmd = new Pong(getId());
         sendCommandAndCheckErrors(cmd);
+    }
+
+    /**
+     * Send batch.
+     *
+     * @param commands batch command
+     * @return json
+     * @throws java.io.IOException if IO errors occurred
+     * @throws BaseException       on API error
+     */
+    public JsonElement sendBatch(Collection<SessionCommand> commands) throws IOException, BaseException {
+        BatchCommand cmd = new BatchCommand(getId(), commands.size());
+        cmd.addAll(commands);
+        return sendCommandAndCheckErrors(cmd);
     }
 
     /**
@@ -293,12 +310,13 @@ public class Session {
      * @param type address type
      * @param groupIds group ids
      * @param ip user ip or server ip
+     * @return json
      * @throws java.io.IOException if IO errors occurred
      * @throws BaseException       on API error
      */
-    public void addGroupMember(String address, AddressType type, List<String> groupIds, String ip) throws IOException, BaseException {
+    public JsonElement addGroupMember(String address, AddressType type, List<String> groupIds, String ip) throws IOException, BaseException {
         SetGroupMember cmd = new SetGroupMember(getId(), address, type, ActionPolicy.UPDATE, groupIds, null, ip);
-        sendCommandAndCheckErrors(cmd);
+        return sendCommandAndCheckErrors(cmd);
     }
 
     /**
@@ -308,12 +326,13 @@ public class Session {
      * @param type address type
      * @param groupIds group ids
      * @param ip user ip or server ip
+     * @return json
      * @throws java.io.IOException if IO errors occurred
      * @throws BaseException       on API error
      */
-    public void deleteGroupMember(String address, AddressType type, List<String> groupIds, String ip) throws IOException, BaseException {
+    public JsonElement deleteGroupMember(String address, AddressType type, List<String> groupIds, String ip) throws IOException, BaseException {
         SetGroupMember cmd = new SetGroupMember(getId(), address, type, ActionPolicy.UPDATE, null, groupIds, ip);
-        sendCommandAndCheckErrors(cmd);
+        return sendCommandAndCheckErrors(cmd);
     }
 
     /**
@@ -324,13 +343,14 @@ public class Session {
      * @param includeGroupIds include group ids
      * @param excludeGroupIds exclude group ids
      * @param ip user ip or server ip
+     * @return json
      * @throws java.io.IOException if IO errors occurred
      * @throws BaseException       on API error
      */
-    public void setGroupMember(String address, AddressType type, List<String> includeGroupIds, List<String> excludeGroupIds,
-                               String ip) throws IOException, BaseException {
+    public JsonElement setGroupMember(String address, AddressType type, List<String> includeGroupIds, List<String> excludeGroupIds,
+                                      String ip) throws IOException, BaseException {
         SetGroupMember cmd = new SetGroupMember(getId(), address, type, ActionPolicy.UPDATE, includeGroupIds, excludeGroupIds, ip);
-        sendCommandAndCheckErrors(cmd);
+        return sendCommandAndCheckErrors(cmd);
     }
 
     /**
@@ -350,12 +370,13 @@ public class Session {
      * Delete member.
      *
      * @param address address
+     * @return json
      * @throws java.io.IOException if IO errors occurred
      * @throws BaseException       on API error
      */
-    public void deleteMember(String address) throws IOException, BaseException {
+    public JsonElement deleteMember(String address) throws IOException, BaseException {
         DeleteMember cmd = new DeleteMember(getId(), address);
-        sendCommandAndCheckErrors(cmd);
+        return sendCommandAndCheckErrors(cmd);
     }
 
     /**
@@ -425,12 +446,13 @@ public class Session {
      *
      * @param email sender email
      * @param message message
+     * @return json
      * @throws java.io.IOException if IO errors occurred
      * @throws BaseException       on API error
      */
-    public void sendMailToSanta(String email, String message) throws IOException, BaseException {
+    public JsonElement sendMailToSanta(String email, String message) throws IOException, BaseException {
         SendMailToSanta cmd = new SendMailToSanta(getId(), email, message);
-        sendCommandAndCheckErrors(cmd);
+        return sendCommandAndCheckErrors(cmd);
     }
 
     /**
@@ -438,12 +460,13 @@ public class Session {
      *
      * @param email sender email
      * @param message message
+     * @return json
      * @throws java.io.IOException if IO errors occurred
      * @throws BaseException       on API error
      */
-    public void sendMailToSupport(String email, String message) throws IOException, BaseException {
+    public JsonElement sendMailToSupport(String email, String message) throws IOException, BaseException {
         SendMailToSupport cmd = new SendMailToSupport(getId(), email, message);
-        sendCommandAndCheckErrors(cmd);
+        return sendCommandAndCheckErrors(cmd);
     }
 
     /**
@@ -475,12 +498,13 @@ public class Session {
      * Delete later issue.
      *
      * @param issueId issue id
+     * @return json
      * @throws java.io.IOException if IO errors occurred
      * @throws BaseException       on API error
      */
-    public void deleteLaterIssue(String issueId) throws IOException, BaseException {
+    public JsonElement deleteLaterIssue(String issueId) throws IOException, BaseException {
         DeleteLaterIssue cmd = new DeleteLaterIssue(getId(), issueId);
-        sendCommandAndCheckErrors(cmd);
+        return sendCommandAndCheckErrors(cmd);
     }
 
     /**

@@ -35,7 +35,7 @@ public class SetGroupMember extends SessionCommand {
     private Map<String, Object> objectMap = new HashMap<>();
     //TODO disable in future
     @SerializedName("return_fresh_obj")
-    private int returnFreshObject = 1;
+    private int returnFreshObject = 0;
 
     /**
      * Constructor.
