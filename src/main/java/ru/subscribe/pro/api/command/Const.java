@@ -11,7 +11,7 @@ package ru.subscribe.pro.api.command;
  */
 public enum Const {
     /** Subscribe.ru base API url. */
-    BASE_API_URL("", "https://pro.subscribe.ru/api"),
+    BASE_API_URL("", "https://api.sendsay.ru/"),
     /** API version. */
     API_VERSION("apiversion", "100"),
     /** JSON. */

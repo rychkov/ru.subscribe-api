@@ -6,7 +6,7 @@
 
     <groupId>ru.subscribe.pro</groupId>
     <artifactId>ru.subscribe-api</artifactId>
-    <version>0.1</version>
+    <version>0.3</version>
     <name>Subscribe.ru Java API</name>
 
     <licenses>
